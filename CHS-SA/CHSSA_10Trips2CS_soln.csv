@@ -1,0 +1,5 @@
+bus_id,trips,numRecharge,numTrips,gapTime
+1,"AC2,CA3",0,2,45.0
+2,"CA1,AC3,CS1,CA5,AC5",1,5,165.0
+3,"AC1,CA2,CS1,AC4",1,4,260.0
+4,CA4,0,1,0.0
