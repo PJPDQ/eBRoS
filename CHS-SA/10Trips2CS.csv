@@ -1,0 +1,13 @@
+,bus_id,trip_id,dep_time,arr_time,duration,dep_terminal,arr_terminal,next_dep,difference
+0,1,AC2,675,815,140,Terminal A,Terminal C,860.0,45.0
+1,1,CA3,860,1000,140,Terminal C,Terminal A,0.0,0.0
+2,2,AC1,555,695,140,Terminal A,Terminal C,740.0,45.0
+3,2,CA2,740,880,140,Terminal C,Terminal A,900.0,20.0
+4,2,CS1,900,960,80,Terminal A,Terminal A,1155.0,195.0
+5,2,AC4,1155,1295,140,Terminal A,Terminal C,0.0,0.0
+6,3,CA1,570,710,140,Terminal C,Terminal A,795.0,85.0
+7,3,AC3,795,935,140,Terminal A,Terminal C,955.0,20.0
+8,3,CS1,955,1015,80,Terminal C,Terminal C,1040.0,25.0
+9,3,CA5,1040,1180,140,Terminal C,Terminal A,1215.0,35.0
+10,3,AC5,1215,1355,140,Terminal A,Terminal C,0.0,0.0
+11,4,CA4,920,1060,140,Terminal C,Terminal A,0.0,0.0

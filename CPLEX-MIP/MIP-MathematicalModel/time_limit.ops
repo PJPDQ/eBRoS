@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<settings version="2">
+  <category name="cplex">
+    <setting name="parallelmode" value="1"/>
+    <setting name="optimalitytarget" value="1"/>
+    <setting name="tilim" value="425000.0"/>
+  </category>
+  <category name="language">
+    <setting name="relaxationlevel" value="labeledconstraints"/>
+  </category>
+  <category name="run">
+    <setting name="run_engineexportextension" value="mps"/>
+  </category>
+</settings>

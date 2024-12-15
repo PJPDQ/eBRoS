@@ -1,0 +1,71 @@
+/*********************************************
+ * OPL 22.1.1.0 Data
+ * Author: gozalid
+ * Creation Date: 4 Apr. 2024 at 11:29:07 am
+ *********************************************/
+ /* Bus 555 Trips 1 CS */
+  SheetConnection inp("bus_555_sim_05_00_23_05.xlsx");
+  actual_dur from SheetRead(inp, "main!E2:E141");
+  gamma from SheetRead(inp, "gamma!B2:EJ140");
+  delta from SheetRead(inp, "delta!B2:EK141");
+  MAX_DURATION from SheetRead(inp, "main!R17");
+  MultiCS from SheetRead(inp, "phi!B2:EJ140");
+  zeta from SheetRead(inp, "zeta!B2:EJ140");
+  TMAX from SheetRead(inp, "main!R8");
+  idles from SheetRead(inp, "zeta!B141:EJ279");
+////  PHI from SheetRead(inp, "Recharged_Feasible_mat1cs!B2:AF32");
+////  PHI from SheetRead(inp, "Recharged_Feasible_mat!B2:AF32");
+
+// /* Bus 555 Trips 2 CS */
+//  SheetConnection inp("bus_555_sim_05_00_23_05.xlsx");
+//  actual_dur from SheetRead(inp, "main!E2:E142");
+//  gamma from SheetRead(inp, "gamma!B2:EJ140");
+//  delta from SheetRead(inp, "delta!B2:EL142");
+//  MAX_DURATION from SheetRead(inp, "main!R17");
+//  MultiCS from SheetRead(inp, "phi!B2:EJ279");
+//  zeta from SheetRead(inp, "zeta!B2:EJ140");
+//  TMAX from SheetRead(inp, "test!R8");
+//  idles from SheetRead(inp, "zeta!B141:EJ418");
+////  SheetConnection inp("final_test.xlsx");
+////  actual_dur from SheetRead(inp, "test!B2:B34");
+////  gamma from SheetRead(inp, "feasible_mat!B2:AF32");
+////  delta from SheetRead(inp, "duration_mat!B2:AH34");
+////  MAX_DURATION from SheetRead(inp, "test!K16");
+////  MultiCS from SheetRead(inp, "Recharged_Feasible_mat!C2:AG63");
+////  zeta from SheetRead(inp, "idle_mat!B2:AF32");
+////  TMAX from SheetRead(inp, "test!K8");
+////  idles from SheetRead(inp, "idle_mat!B33:AF94");
+  
+//    /* 30 Trips 3CSs */
+//  SheetConnection inp("final_test.xlsx");
+//  actual_dur from SheetRead(inp, "test!B2:B35");
+//  gamma from SheetRead(inp, "feasible_mat!B2:AF32");
+//  delta from SheetRead(inp, "duration_mat!B2:AI35");
+//  MAX_DURATION from SheetRead(inp, "test!K16");
+//  MultiCS from SheetRead(inp, "Recharged_Feasible_mat!C2:AG94");
+//  zeta from SheetRead(inp, "idle_mat!B2:AF32");
+//  TMAX from SheetRead(inp, "test!K8");
+//  idles from SheetRead(inp, "idle_mat!B33:AF125");
+  
+//  /* 10 Trips 2 CSs */
+//  SheetConnection inp("final_test.xlsx");
+//  actual_dur from SheetRead(inp, "10Trips!B2:B14");
+//  gamma from SheetRead(inp, "10Trips!B17:L27");
+//  delta from SheetRead(inp, "10Trips!P17:AB29");
+//  MAX_DURATION from SheetRead(inp, "10Trips!K14");
+//  MultiCS from SheetRead(inp, "10Trips!B31:L52");
+//  zeta from SheetRead(inp, "10Trips!P46:Z56");
+//  TMAX from SheetRead(inp, "10Trips!K8");
+//  idles from SheetRead(inp, "10Trips!P57:Z78");
+  
+//    /* 10 Trips 1CS  */
+//  SheetConnection inp("final_test.xlsx");
+//  actual_dur from SheetRead(inp, "10Trips!B2:B13");
+//  gamma from SheetRead(inp, "10Trips!B17:L27");
+//  delta from SheetRead(inp, "10Trips!P17:AA28");
+//  MAX_DURATION from SheetRead(inp, "10Trips!K14");
+//  MultiCS from SheetRead(inp, "10Trips!B31:L41");
+//  zeta from SheetRead(inp, "10Trips!P46:Z56");
+//  TMAX from SheetRead(inp, "10Trips!K8");
+//  idles from SheetRead(inp, "10Trips!P57:Z67");
+  

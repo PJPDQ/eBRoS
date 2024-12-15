@@ -1,0 +1,27 @@
+/*********************************************
+ * OPL 22.1.1.0 Data
+ * Author: gozalid
+ * Creation Date: 12 Oct. 2024 at 10:36:19 am
+ *********************************************/
+// /* 54 Trips 3CS*/
+//  SheetConnection inp("54Trips_3CS.xlsx");
+//  actual_dur from SheetRead(inp, "main!D2:D59");
+//  gamma from SheetRead(inp, "gamma!B2:BD56");
+//  delta from SheetRead(inp, "delta!B2:BG59");
+//  MAX_DURATION from SheetRead(inp, "main!L16");
+//  MultiCS from SheetRead(inp, "phi!B2:BD166");
+//  zeta from SheetRead(inp, "zeta!B2:BD56");
+//  TMAX from SheetRead(inp, "main!K8");
+//  idles from SheetRead(inp, "zeta!B57:BD221");
+////  PHI from SheetRead(inp, "Recharged_Feasible_mat1cs!B2:AF32");
+
+ /* 54 Trips 1CS */
+  SheetConnection inp("54Trips_3CS.xlsx");
+  actual_dur from SheetRead(inp, "main!D2:D57");
+  gamma from SheetRead(inp, "gamma!B2:BD56");
+  delta from SheetRead(inp, "delta!B2:BE57");
+  MAX_DURATION from SheetRead(inp, "main!L16");
+  MultiCS from SheetRead(inp, "phi!B2:BD56");
+  zeta from SheetRead(inp, "zeta!B2:BD56");
+  TMAX from SheetRead(inp, "main!K8");
+  idles from SheetRead(inp, "zeta!B57:BD111");
