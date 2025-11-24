@@ -2,8 +2,9 @@ from misc import vectorSchRepresentation, flatten_link_names, convert_unique_pat
 from chs import constructiveSearch
 import copy
 import random
+from tqdm import tqdm
 import math
-
+# MIN_BUSES = 10
 # random.seed(9001)
 def check_overlap(elementList, otherlist):
     return [i for i in elementList if i in otherlist]
@@ -156,13 +157,10 @@ def insertion(node, roster, trips_df, arcs, recharge_arcs, max_it=10):
     else:
         new_dur, new_path = dur, new_path
         new = set(convert_unique_path(new_path)) - set(rechargenodes) ## measuring new completed nodes
-        # print(f"new = {new}")
         prev = set(roster) - set(nontrips)
         replaced = prev - new
-        # print(f"replace = {replaced}")
         if len(replaced) == 0: ## all prev schedules are assigned
             soln = vectorSchRepresentation([new_path])[0]
-            # print(f"solumn = {soln}")
         else:
             if len(prev) == len(new):
                 new_bus = random.choice([0, 1])
@@ -188,7 +186,7 @@ def swap_recharge_task(states, trips_df, arcs, recharge_arcs):
 #     print(list(rechargeRosters.keys()))
     if len(list(rechargeRosters.keys())):
         random_idx = random.choice(list(rechargeRosters.keys())) #list(rechargeRosters.keys())[1] #
-    new_states = []; changeIdxs = []
+    new_states = []
     ## Removing charging station tour Destroy operator
     for idx, rroster in rechargeRosters.items():
         if idx == random_idx:
@@ -225,18 +223,12 @@ def compare_tasks(remove_node, rest, arcs, recharge_arcs, idx, cs, max_it=10):
         initial_next = roster[:roster.index(max_start)+1] + [pair[1] for pair in arcs.keys() if pair[0] == remove_node]
         new_arcs = filter_arcs(arcs, initial_next, cs, remove_node)
         new_recharges = filter_arcs(recharge_arcs, initial_next, cs, remove_node)
-        # print(initial_next[0])
-        # print(new_arcs)
         _, new_path, temp_g = constructiveSearch((0,initial_next[0]), new_arcs, new_recharges, 1, [(0,initial_next[0])], {}, set(cs), 0, max_it)
-        # print(f"prev path = {roster}... new path = {new_path}...")
         path_list = vectorSchRepresentation([new_path])[0]
         cond = any(any(item in sublist for item in path_list if item != 0 and item not in cs) for sublist in completed_task)
-#         if len(new_path) >= len(roster) and len_schedule_change < len(new_path) and not cond and random.choice([0, 1]): ## better or not change in previous and proposed schedule
         if len(new_path) >= len(roster) and len(new_path) >= len(candidate_schedules) and not cond and random.choice([0, 1]): ## better or not change in previous and proposed schedule
-
             candidate_schedules = new_path
             idx_sch = i
-#             print(f"i = {i}... idx = {idx_sch}.... candidate = {new_path}...")
             len_schedule_change = len(new_path)
     if idx_sch > -1:
         new_rest[idx_sch] = vectorSchRepresentation([candidate_schedules])[0]
@@ -251,10 +243,8 @@ def generate_new_solution(new, removed_schs, neighbors, arcs, recharge_arcs, idx
             pass
         else:
             idx = idxs[sch]
-#             print(f"removed node = {sch} removed_schs={removed_schs}... new = {new}")
             tmp = copy.deepcopy(neighbors)
             idx_sch, new_schedule = compare_tasks(sch, tmp, arcs, recharge_arcs, idx, cs)
-#             print(f"idx_sch = {idx_sch}... new_schedule = {new_schedule}...")
             if idx_sch < 0:
                 if [sch,0] not in neighbors:
                     neighbors.append([sch, 0]) # introduce a new single-trip task
@@ -268,11 +258,8 @@ def generate_new_solution(new, removed_schs, neighbors, arcs, recharge_arcs, idx
                 if unassigned: # to check unassigned trip nodes.
                     unassigned -= set(removed_schs)
                     removed_schs = list(trip_nodes - checker)
-                    # print(f"new unassigned = {unassigned}... removed_sch = {removed_schs}...")
                     for i in unassigned:
-                        # print(f"i = {i}...")
                         idxs[i] = idx_sch
-                    # print(f"new_schedule... = {new_schedule}")
                     neighbors = new_schedule
                 else:
                     neighbors = new_schedule
@@ -290,15 +277,13 @@ def get_neighbors(states, trips_df, arcs, recharge_arcs):
         print("swapping other CS...")
         neighbor = swap_cs_task(neighbor, trips_df, arcs, recharge_arcs)
     ### perturb for try to connect the rosters.
-#     elif func == 2 :
-#         neighbor = early_return_task(neighbor, trips_df, arcs, recharge_arcs)
     else:
         print("insertion...")
         neighbor = insert_schedules(neighbor, trips_df, arcs, recharge_arcs)
     return neighbor
 
 
-9# def ahp(criterias):
+# def ahp(criterias):
 def beneficial_normalized(col, col_max): ## higher value is desired!
     return col/col_max
 def nonbeneficial_normalized(x, col_min): ## lower value is desired 
@@ -322,63 +307,200 @@ def get_cost(states, prev_state, all_nodes, arcs, recharge_arc, solution_spaces)
     prev_buses = [len(prev_state) for prev_state in solution_spaces]
     norm_curr_buses = minmax_normalized(curr_nbuses, min(prev_buses), max(prev_buses))
     norm_prev_buses = minmax_normalized(prev_nbuses, min(prev_buses), max(prev_buses))
-    if curr_nbuses == prev_nbuses:
+    if curr_nbuses >= prev_nbuses:
         prev_gaps = [get_total_gap(prev, all_nodes, recharge_arc) for prev in solution_spaces]
+        prev_gap = get_total_gap(prev_state, all_nodes, recharge_arc)
         curr_gap = get_total_gap(states, all_nodes, recharge_arc)
-        norm_curr_gap = minmax_normalized(curr_gap, min(prev_gaps), max(prev_gaps))
-        return (alpha) * (norm_curr_buses) + (1-alpha) * norm_curr_gap
+        if prev_gap >= curr_gap:
+            norm_curr_gap = minmax_normalized(curr_gap, min(prev_gaps), max(prev_gaps))
+            return (alpha) * (norm_curr_buses) + (1-alpha) * norm_curr_gap
+        else:
+            norm_curr_gap = minmax_normalized(prev_gap, min(prev_gaps), max(prev_gaps))
+            return (alpha) * (norm_prev_buses) + (1-alpha) * norm_curr_gap
     else:
         return norm_curr_buses
-    
 
+def get_unique_gaps(solution_spaces, all_nodes, recharge_arc):
+    unique_nbuses = {}
+    for space in solution_spaces:
+        if len(space) not in unique_nbuses:
+            tot_gap = get_total_gap(space, all_nodes, recharge_arc)
+            unique_nbuses[len(space)] = tot_gap
+        else:
+            tot_gap = get_total_gap(space, all_nodes, recharge_arc)
+            prev_gap = unique_nbuses[len(space)]
+            if prev_gap > tot_gap:
+                unique_nbuses[len(space)] = tot_gap
+    return unique_nbuses
+
+def get_pareto(states, prev_state, all_nodes, arcs, recharge_arc, solution_spaces):
+    """
+    Calculates cost/fitness for the solution/route.
+    Cost function is defined as 
+        - the number of buses dispatch and,
+        - the waiting time (the time difference between the next and previous tasks 
+            recharging task comes with deadhead from the terminals to the departure time 
+            of the next tasks)
+    """
+    curr_nbuses = len(states) #Obj1
+    prev_nbuses = len(prev_state)
+    # prev_buses = [len(prev_state) for prev_state in solution_spaces]
+    # prev_gaps = [get_total_gap(prev, all_nodes, recharge_arc) for prev in solution_spaces]
+    prev_gaps = get_unique_gaps(solution_spaces, all_nodes, recharge_arc)
+    if curr_nbuses >= prev_nbuses:
+        prob = rand()
+        if prob > 0.5:
+            gap = min(prev_gaps.values())
+            numBuses = [key for key, val in prev_gaps.items() if val == gap]
+            return numBuses[0]
+        else:
+            prev_gaps[curr_nbuses] = get_total_gap(states, all_nodes, recharge_arc)
+            return random.choice(list(prev_gaps.keys()))
+    else:
+        return curr_nbuses
+    
 from numpy.random import rand
-def annealing(initial_state, trips_df, arcs, recharge_arc):
+def annealing(initial_state, trips_df, arcs, recharge_arc, runs=1500):
     
     """Peforms simulated annealing to find a solution"""
-    initial_temp = 100
-   
-    alpha = 0.99
-    
+    initial_temp = runs
+    alpha = 0.95
     current_temp = initial_temp
-
     # Start by initializing the current state with the initial state
     solution = initial_state
     same_solution = 0
     same_cost_diff = 0
-    temp = []
+    temperature = []
     it = 0
     cost_diffs = []
     costs = []
     best_costs = []
-    solution_spaces = [[], solution]
-    best_cost, best_soln = get_cost(solution, solution, trips_df, arcs, recharge_arc, solution_spaces), solution
+    reheat_threshold = 100
+    reheat_counter = 0
+    solution_spaces = [solution]
+    best_cost, best_soln = get_pareto(solution, solution, trips_df, arcs, recharge_arc, solution_spaces), solution
     curr_cost, curr_solution = best_cost, best_soln
-    while same_cost_diff < 200 and current_temp > 0 and it < 1000:
+    temp, temp_cost = curr_solution, curr_cost
+    pbar = tqdm(total = runs+1)
+    while current_temp > 0 and it < runs:
         print(f"Iteration {it+1}...")
         neighbor = get_neighbors(curr_solution, trips_df, arcs, recharge_arc)
-        print(f"proposed solution = {neighbor}")
+        # print(f"proposed solution = {neighbor}")
         solution_spaces.append(neighbor)
         # Check if neighbor is best so far
-        neighbor_cost = get_cost(neighbor, curr_solution, trips_df, arcs, recharge_arc, solution_spaces)
-        cost_diff = neighbor_cost - best_cost
+        # neighbor_cost = get_cost(neighbor, curr_solution, trips_df, arcs, recharge_arc, solution_spaces)
+        neighbor_cost = get_pareto(neighbor, curr_solution, trips_df, arcs, recharge_arc, solution_spaces)
+        print(f"NEIGHBOUR = {neighbor_cost}\nCURR = {curr_cost}\ndiff = {-float(neighbor_cost - curr_cost)}")
+        cost_diff = neighbor_cost - curr_cost
         cost_diffs.append(cost_diff)
-        # print(f"Prev = {curr_solution} with cost = {curr_cost}\ndiff = {cost_diff}\ncurr_st = {neighbor} with cost {neighbor_cost}")
         it += 1
-        if cost_diff < 0 or rand() < math.exp(-float(neighbor_cost - curr_cost) / float(current_temp)):
-            curr_cost, curr_solution = neighbor_cost, neighbor
-            if cost_diff < 0:
-                best_cost, best_soln = neighbor_cost, neighbor
-                same_solution = 0
-                same_cost_diff = 0
+        accept_neighbor = False
+        if cost_diff < 0:
+            accept_neighbor = True
+            same_solution = 0
+            same_cost_diff = 0
         else:
-            same_cost_diff+=1
-            same_solution+=1
+            try:
+                acceptance_prob = math.exp(-cost_diff / current_temp)
+                if rand() < acceptance_prob:
+                    accept_neighbor = True
+                    same_solution = 0
+                    same_cost_diff = 0
+                else:
+                    same_cost_diff+=1
+                    same_solution+=1
+            except (OverflowError, ZeroDivisionError):
+                same_cost_diff+=1
+                same_solution+=1
+        
+        if accept_neighbor:
+            curr_cost, curr_solution = neighbor_cost, copy.deepcopy(neighbor)
+            if cost_diff < 0:
+                best_cost, best_soln = neighbor_cost, copy.deepcopy(neighbor)
+        
+        if same_solution > reheat_threshold and reheat_counter < 3:
+            current_temp = initial_temp * 0.5
+            reheat_counter += 1
+            same_cost_diff = 0
+            same_solution = 0
+        
+
         costs.append(curr_cost)
         best_costs.append(best_cost)
-        temp.append(current_temp)
+        temperature.append(current_temp)
         # decrement the temperature
         current_temp = current_temp*alpha
         print('-'*100)
-    return best_soln, best_cost, cost_diffs, temp, it, costs, solution_spaces, best_costs
+        pbar.update(1)
+    pbar.close()
+    return best_soln, best_cost, cost_diffs, temperature, it, costs, solution_spaces, best_costs
+
+
+
+# def annealing(initial_state, trips_df, arcs, recharge_arc, scheduler, min_buses=100):
+    
+#     """Peforms simulated annealing to find a solution"""
+#     initial_temp = 1000
+#     alpha = 0.99
+#     current_temp = initial_temp
+    
+#     # Start by initializing the current state with the initial state
+#     solution = initial_state
+#     same_solution = 0
+#     same_cost_diff = 0
+#     temperatures = []
+#     it = 0
+#     cost_diffs = []
+#     costs = []
+#     best_costs = []
+#     print(f"INITIAL = {solution}")
+#     solution_spaces = [solution]
+#     best_soln = solution
+#     best_cost = get_cost(solution, solution, trips_df, arcs, recharge_arc, solution_spaces)
+#     curr_cost, curr_solution = best_cost, best_soln
+#     # print(f"INITIAL_{curr_cost}...\nsoln: {curr_solution}")
+#     temp, temp_cost = curr_solution, curr_cost
+#     # print(f"INITIAL_{temp_cost}...\nsoln: {temp}")
+#     # while same_cost_diff < 200 and current_temp > 0 and it < 10000:
+#     while current_temp > 0 and it < 10000:
+#         print(f"Iteration {it+1}...")
+#         neighbor = get_neighbors(curr_solution, trips_df, arcs, recharge_arc)
+#         print(f"proposed solution = {neighbor}")
+#         # if len(neighbor) != min_buses:
+#         #     it += 1
+
+#         #     pass
+#         # else:
+#         solution_spaces.append(neighbor)
+#         # Check if neighbor is best so far
+#         # print(f"SOLN = {solution_spaces}")
+#         neighbor_cost = get_cost(neighbor, curr_solution, trips_df, arcs, recharge_arc, solution_spaces)
+#         cost_diff = neighbor_cost - best_cost
+#         cost_diffs.append(cost_diff)
+#         # print(f"diff neigh vs. current = {-float(neighbor_cost - curr_cost)}\ncurrent temp = {float(current_temp)}")
+#         new_temperature = math.exp(-(float(cost_diff) / float(current_temp)))
+#         prob = rand()
+#         if cost_diff < 0 or prob < new_temperature:
+#             if rand() < 0.5:
+#                 temp, temp_cost = best_soln, best_cost
+#             else:
+#                 temp, temp_cost = curr_solution, curr_cost
+#             curr_cost, curr_solution = neighbor_cost, neighbor
+#             if cost_diff < 0:
+#                 best_cost, best_soln = neighbor_cost, neighbor
+#                 same_solution = 0
+#                 same_cost_diff = 0
+#         else:
+#             same_cost_diff+=1
+#             same_solution+=1
+#             temp, temp_cost = neighbor, neighbor_cost
+#         costs.append(curr_cost)
+#         best_costs.append(best_cost)
+#         temperatures.append(current_temp)
+#         # decrement the temperature
+#         current_temp = current_temp*alpha
+#         it += 1
+#         curr_solution, curr_cost = temp, temp_cost
+#     return best_soln, best_cost, cost_diffs, temperatures, it, costs, solution_spaces, best_costs
 
 

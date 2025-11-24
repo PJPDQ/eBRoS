@@ -1,0 +1,44 @@
+30	1	2	2	5	200	5	0.3	0.9	0.1
+4	0.48	0.52	0.58	0.79
+Bulim
+single	double
+Bukit_Batok	Marina_Center
+200	300
+2	3 
+0	28
+22	0
+0	26.6
+16.7	0
+16	32
+7.6	24.8
+10	10
+1	77	18.7	Bukit_Batok	Marina_Center	5:45	6:47	345	407	FALSE
+2	77	18.7	Marina_Center	Bukit_Batok	5:45	6:47	345	407	FALSE
+3	173	13.2	Bukit_Batok	Bukit_Batok	6:00	6:44	360	404	FALSE
+4	77	18.7	Bukit_Batok	Marina_Center	6:15	7:17	375	437	FALSE
+5	77	18.7	Marina_Center	Bukit_Batok	6:15	7:17	375	437	FALSE
+6	173	13.2	Bukit_Batok	Bukit_Batok	6:30	7:14	390	434	FALSE
+7	77	18.7	Bukit_Batok	Marina_Center	6:45	7:47	405	467	FALSE
+8	77	18.7	Marina_Center	Bukit_Batok	6:45	7:47	405	467	FALSE
+9	173	13.2	Bukit_Batok	Bukit_Batok	7:00	7:44	420	464	TRUE
+10	77	18.7	Bukit_Batok	Marina_Center	7:15	8:17	435	497	TRUE
+11	77	18.7	Marina_Center	Bukit_Batok	7:15	8:17	435	497	TRUE
+12	173	13.2	Bukit_Batok	Bukit_Batok	7:30	8:14	450	494	TRUE
+13	77	18.7	Bukit_Batok	Marina_Center	7:45	8:47	465	527	TRUE
+14	77	18.7	Marina_Center	Bukit_Batok	7:45	8:47	465	527	TRUE
+15	173	13.2	Bukit_Batok	Bukit_Batok	8:00	8:44	480	524	TRUE
+16	77	18.7	Bukit_Batok	Marina_Center	8:15	9:17	495	557	TRUE
+17	77	18.7	Marina_Center	Bukit_Batok	8:15	9:17	495	557	TRUE
+18	173	13.2	Bukit_Batok	Bukit_Batok	8:30	9:14	510	554	TRUE
+19	77	18.7	Bukit_Batok	Marina_Center	8:45	9:47	525	587	TRUE
+20	77	18.7	Marina_Center	Bukit_Batok	8:45	9:47	525	587	TRUE
+21	173	13.2	Bukit_Batok	Bukit_Batok	9:00	9:44	540	584	TRUE
+22	77	18.7	Bukit_Batok	Marina_Center	9:15	10:17	555	617	TRUE
+23	77	18.7	Marina_Center	Bukit_Batok	9:15	10:17	555	617	TRUE
+24	173	13.2	Bukit_Batok	Bukit_Batok	9:30	10:14	570	614	TRUE
+25	77	18.7	Bukit_Batok	Marina_Center	9:45	10:47	585	647	TRUE
+26	77	18.7	Marina_Center	Bukit_Batok	9:45	10:47	585	647	TRUE
+27	173	13.2	Bukit_Batok	Bukit_Batok	10:00	10:44	600	644	TRUE
+28	173	13.2	Bukit_Batok	Bukit_Batok	10:30	11:14	630	674	FALSE
+29	173	13.2	Bukit_Batok	Bukit_Batok	11:00	11:44	660	704	FALSE
+30	173	13.2	Bukit_Batok	Bukit_Batok	11:30	12:14	690	734	FALSE

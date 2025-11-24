@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>EBRP Dashboard</title>
+    <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
+</head>
+<body>
+    <h2>Electric Bus Rostering Overview</h2>
+    <div id="gantt">{{ gantt | safe }}</div>
+    <hr>
+    <div id="soc_plot"></div>
+
+    <script>
+    document.addEventListener("plotly_click", function(e) {
+        var bus_id = e.points[0].y;
+        console.log(`BUSID!!! ${bus_id}`);
+        fetch(`/bus_soc/${bus_id}`)
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("soc_plot").innerHTML = data.plot;
+            });
+    });
+    </script>
+</body>
+</html>
