@@ -26,7 +26,7 @@ def constructiveScheduler(df2, gamma_lists, phi_lists, charging_stations):
 def constructiveSearch(s, gamma, phi, has_recharged, path, g, charging_stations, num_it, max_it):
     if s in g and len(set(flatten_link_names(vectorSchRepresentation([path])))) == g[s][0]:
         trips, new_path = g[s]
-        return trips, new_path, g
+        # return trips, new_path, g
     if s[1] == 0 or num_it > max_it:
         total_duration = sum([g[trip][0]  if len(trip) < 3 else 0 for trip in path[:-1]] + [gamma[s]['duration']])
         if num_it > max_it:
@@ -95,7 +95,7 @@ def rechargingTask(curr_trips, path, gamma, phi, has_recharged, g, charging_stat
 def rechargingTaskv2(curr_trips, path, gamma, phi, has_recharged, g, charging_stations, num_it, max_it):
     if curr_trips >= D_MAX * has_recharged:
         recharge_dest = [i for i in path[:-1]][-1]
-        print(f"dest = {recharge_dest}")
+        # print(f"dest = {recharge_dest}")
         # recharge_dest = flatten_link_names(vectorSchRepresentation([path[:-1]]))
         recharges = list(filter(lambda x: x[0] == recharge_dest[0], phi)) #and x[1] == recharge_dest[1])
         if len(recharges) > 0:
@@ -131,6 +131,7 @@ def rechargingTaskv2(curr_trips, path, gamma, phi, has_recharged, g, charging_st
             curr_trips, path = best_least_recharge
         else: ## no recharge is possible so, immediate trip to DEPOT [0]
             ### Replace new path to the path to depot!
+            # print(f"EXCEED!! path! ={path}... recharge = {recharge_dest}")
             path = path[:path.index(recharge_dest)] + [(recharge_dest[0], 0)]
             curr_trips = len(set(flatten_link_names(vectorSchRepresentation([path]))) - set(charging_stations))
     return curr_trips, path, g, has_recharged
