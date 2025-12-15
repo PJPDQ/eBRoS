@@ -5,3 +5,4 @@ test/
 *.png
 *.csv
 *.aqua
+*/archives/*
